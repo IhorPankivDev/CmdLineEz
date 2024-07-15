@@ -34,9 +34,9 @@ namespace CmdLineEz
                 var attribute = prop.GetCustomAttribute<CmdLineEzAttribute>();
                 string paramName = attribute?.AltName ?? prop.Name.ToLower();
 
-                var inputParam = argsList.FirstOrDefault(a => 
-                a.StartsWith($"/{paramName}=", StringComparison.OrdinalIgnoreCase) 
-                || 
+                var inputParam = argsList.FirstOrDefault(a =>
+                a.StartsWith($"/{paramName}=", StringComparison.OrdinalIgnoreCase)
+                ||
                 a.StartsWith($"/{paramName}", StringComparison.OrdinalIgnoreCase));
 
 
@@ -71,13 +71,11 @@ namespace CmdLineEz
 
             if (remainingProperty.Count() > 1)
             {
-                throw new InvalidOperationException("There are not allowed more then 1 remaining properties.");
+                errors.Add($"There are not allowed more then 1 remaining properties");
             }
-            else if (remainingProperty.Count() == 1)
-            {
-                List<string> remainingArgs = args.Where(a => !a.StartsWith("/")).ToList();
-                remainingProperty.First().SetValue(result, remainingArgs);
-            }
+
+            List<string> remainingArgs = args.Where(a => !a.StartsWith("/")).ToList();
+            remainingProperty.First().SetValue(result, remainingArgs);
 
             #endregion
 
