@@ -30,5 +30,24 @@ namespace CmdLineEz.Tests.TestData
                 PrintDetails = true,
             }, new string[6] { "/confirm", "/cHar=somevalue", "/RecuRsive", "/VeRbOsE", "/PreFix=    ", "example" });
         }
+
+        public static IEnumerable<TestCaseData> GetDeleteCommandLineWithMissingRequiredParameter()
+        {
+            yield return new TestCaseData(new DeleteCommandLineWithNotSupportedType(),
+            new string[6] { "/char=d", "/Recursive", "/VeRbOsE", "/Prefix", "example", "" });
+
+            yield return new TestCaseData(new DeleteCommandLineWithNotSupportedType(),
+            new string[5] { "/CHAR=somevalue", "/Recursive=somevalue", "/VeRbOsE", "/Prefix=someValue", "example" });
+
+            yield return new TestCaseData(new DeleteCommandLineWithNotSupportedType(),
+            new string[1] { "/char=5" });
+
+            yield return new TestCaseData(new DeleteCommandLineWithNotSupportedType
+            {
+                ConfirmNeeded = true,
+                Recursive = true,
+                PrintDetails = true,
+            }, new string[6] { "confirm", "/cHar=somevalue", "/RecuRsive", "/VeRbOsE", "/PreFix=    ", "example" });
+        }
     }
 }

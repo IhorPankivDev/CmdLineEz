@@ -42,7 +42,7 @@ namespace CmdLineEz
 
                 if (inputParam != null)
                 {
-                    string value = null;
+                    string value = null!;
 
                     if (inputParam.Contains("="))
                         value = inputParam.Split('=')[1];

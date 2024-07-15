@@ -32,5 +32,16 @@ namespace CmdLineEz.Tests
             errors.Should().NotBeNull("Errors list should not be null.")
                 .And.ContainSingle(e => e == "invalid char", "Error message should be 'invalid char'.");
         }
+
+        [TestCaseSource(typeof(DataInitializer), nameof(DataInitializer.GetDeleteCommandLineWithMissingRequiredParameter))]
+        public void Process_DeleteCommandLineWithMissingRequiredParameter_ShouldAddMissingParamExceptionToErrors(DeleteCommandLineWithNotSupportedType result, string[] args)
+        {
+            // Act
+            List<string> errors = CmdLineEz<DeleteCommandLineWithNotSupportedType>.Process(result, args);
+
+            // Assert
+            errors.Should().NotBeNull("Errors list should not be null.")
+                .And.ContainSingle(e => e == "missing confirm", "Error message should be 'missing confirm'.");
+        }
     }
 }
