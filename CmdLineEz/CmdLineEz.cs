@@ -17,8 +17,13 @@ namespace CmdLineEz
         /// <exception cref="NotSupportedException">Throws if </exception>
         public static List<string> Process(T result, string[] args)
         {
+            if (result == null)
+                throw new ArgumentException("No parameter specification loaded.");
+
             var errors = new List<string>();
             var argsList = args.ToList();
+
+            #region Here we would use reflection to get all the fields in the type T and their types
 
             var properties = typeof(T).GetProperties();
             var remainingProperty = properties
@@ -67,6 +72,11 @@ namespace CmdLineEz
                 List<string> remainingArgs = args.Where(a => !a.StartsWith("/")).ToList();
                 remainingProperty.First().SetValue(result, remainingArgs);
             }
+
+            #endregion
+
+
+
 
             return errors.Any() ? errors : null!;
         }
