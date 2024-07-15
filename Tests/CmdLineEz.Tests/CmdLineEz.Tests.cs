@@ -21,5 +21,16 @@ namespace CmdLineEz.Tests
             act.Should().Throw<ArgumentException>()
                 .WithMessage("No parameter specification loaded.");
         }
+
+        [TestCaseSource(typeof(DataInitializer), nameof(DataInitializer.GetDeleteCommandLineWithNotSupportedType))]
+        public void Process_DeleteCommandLineWithNotSupportedType_ShouldAddInvalidParamNameExceptionToErrors(DeleteCommandLineWithNotSupportedType result, string[] args)
+        {
+            // Act
+            List<string> errors = CmdLineEz<DeleteCommandLineWithNotSupportedType>.Process(result, args);
+
+            // Assert
+            errors.Should().NotBeNull("Errors list should not be null.")
+                .And.ContainSingle(e => e == "invalid char", "Error message should be 'invalid NotSupportedProp'.");
+        }
     }
 }
