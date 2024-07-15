@@ -1,3 +1,6 @@
+using CmdLineEz.Tests.TestData;
+using FluentAssertions;
+
 namespace CmdLineEz.Tests
 {
     public class Tests
@@ -8,10 +11,15 @@ namespace CmdLineEz.Tests
         [SetUp]
         public void RunOnceBeforeAllTests() { }
 
-        [Test]
-        public void Test1()
+        [TestCaseSource(typeof(DataInitializer), nameof(DataInitializer.GetNullInsteadOfDeleteCommandLine))]
+        public void Process_WithEmptyTResult_ShouldThrowAnException(DeleteCommandLine result, string[] args)
         {
-            Assert.Pass();
+            // Act
+            Action act = () => CmdLineEz<DeleteCommandLine>.Process(result, args);
+
+            // Assert
+            act.Should().Throw<ArgumentException>()
+                .WithMessage("No parameter specification loaded.");
         }
     }
 }
