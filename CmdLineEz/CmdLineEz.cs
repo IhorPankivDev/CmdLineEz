@@ -34,12 +34,18 @@ namespace CmdLineEz
                 var attribute = prop.GetCustomAttribute<CmdLineEzAttribute>();
                 string paramName = attribute?.AltName ?? prop.Name.ToLower();
 
-                var inputParam = argsList.FirstOrDefault(a =>
-                    a.StartsWith($"/{paramName}=", StringComparison.OrdinalIgnoreCase));
+                var inputParam = argsList.FirstOrDefault(a => 
+                a.StartsWith($"/{paramName}=", StringComparison.OrdinalIgnoreCase) 
+                || 
+                a.StartsWith($"/{paramName}", StringComparison.OrdinalIgnoreCase));
+
 
                 if (inputParam != null)
                 {
-                    string value = inputParam.Split('=')[1];
+                    string value = null;
+
+                    if (inputParam.Contains("="))
+                        value = inputParam.Split('=')[1];
 
                     try
                     {
