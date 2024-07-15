@@ -3,6 +3,9 @@ using System.Reflection;
 
 namespace CmdLineEz
 {
+    /// <summary>
+    /// Processor for command line arguments.
+    /// </summary>
     public class CmdLineEz<T>
     {
         /// <summary>
