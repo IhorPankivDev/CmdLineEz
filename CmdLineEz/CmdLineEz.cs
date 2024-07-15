@@ -52,7 +52,7 @@ namespace CmdLineEz
                             _ => throw new NotSupportedException($"Type {prop.PropertyType} in not supported")
                         });
                     }
-                    catch (Exception)
+                    catch (NotSupportedException)
                     {
                         errors.Add($"invalid {paramName}");
                     }
