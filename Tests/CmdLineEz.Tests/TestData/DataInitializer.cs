@@ -49,5 +49,24 @@ namespace CmdLineEz.Tests.TestData
                 PrintDetails = true,
             }, new string[6] { "confirm", "/RecuRsive", "/VeRbOsE", "/PreFix=    ", "example", "" });
         }
+
+        public static IEnumerable<TestCaseData> GetDeleteCommandLineWithTwoRemainings()
+        {
+            yield return new TestCaseData(new DeleteCommandLineWithTwoRemainings(),
+            new string[3] { "/Recursive", "/VeRbOsE", "/Prefix" });
+
+            yield return new TestCaseData(new DeleteCommandLineWithTwoRemainings(),
+            new string[5] { "/Recursive=somevalue", "/VeRbOsE", "/Prefix=someValue", "example", "" });
+
+            yield return new TestCaseData(new DeleteCommandLineWithTwoRemainings(),
+            new string[1] { "/Recursive=   " });
+
+            yield return new TestCaseData(new DeleteCommandLineWithTwoRemainings
+            {
+                ConfirmNeeded = true,
+                Recursive = true,
+                PrintDetails = true,
+            }, new string[6] { "confirm", "/RecuRsive", "/VeRbOsE", "/PreFix=    ", "example", "" });
+        }
     }
 }

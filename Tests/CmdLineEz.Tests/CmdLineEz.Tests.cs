@@ -48,5 +48,16 @@ namespace CmdLineEz.Tests
         }
 
 
+        [TestCaseSource(typeof(DataInitializer), nameof(DataInitializer.GetDeleteCommandLineWithTwoRemainings))]
+        public void Process_DeleteCommandLineWithTwoRemainings_ShouldAddRemainingExceptionToErrors(DeleteCommandLineWithTwoRemainings result, string[] args)
+        {
+            // Act
+            List<string> errors = CmdLineEz<DeleteCommandLineWithTwoRemainings>.Process(result, args);
+
+            // Assert
+            errors.Should().NotBeNull("Errors list should not be null.")
+                .And.ContainSingle(e => e == "There are not allowed more then 1 remaining properties", 
+                "Error message should be 'There are not allowed more then 1 remaining properties'.");
+        }
     }
 }
