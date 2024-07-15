@@ -39,7 +39,7 @@ namespace CmdLineEz
 
                 if (inputParam != null)
                 {
-                    string value = paramName.Split('=')[1];
+                    string value = inputParam.Split('=')[1];
 
                     try
                     {
