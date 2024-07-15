@@ -11,6 +11,7 @@ namespace CmdLineEz.Tests
         [SetUp]
         public void RunOnceBeforeAllTests() { }
 
+
         [TestCaseSource(typeof(DataInitializer), nameof(DataInitializer.GetNullInsteadOfDeleteCommandLine))]
         public void Process_WithEmptyTResult_ShouldThrowAnException(DeleteCommandLine result, string[] args)
         {
@@ -21,6 +22,7 @@ namespace CmdLineEz.Tests
             act.Should().Throw<ArgumentException>()
                 .WithMessage("No parameter specification loaded.");
         }
+
 
         [TestCaseSource(typeof(DataInitializer), nameof(DataInitializer.GetDeleteCommandLineWithNotSupportedType))]
         public void Process_DeleteCommandLineWithNotSupportedType_ShouldAddInvalidParamNameExceptionToErrors(DeleteCommandLineWithNotSupportedType result, string[] args)
@@ -33,15 +35,18 @@ namespace CmdLineEz.Tests
                 .And.ContainSingle(e => e == "invalid char", "Error message should be 'invalid char'.");
         }
 
+
         [TestCaseSource(typeof(DataInitializer), nameof(DataInitializer.GetDeleteCommandLineWithMissingRequiredParameter))]
-        public void Process_DeleteCommandLineWithMissingRequiredParameter_ShouldAddMissingParamExceptionToErrors(DeleteCommandLineWithNotSupportedType result, string[] args)
+        public void Process_DeleteCommandLineWithMissingRequiredParameter_ShouldAddMissingParamExceptionToErrors(DeleteCommandLine result, string[] args)
         {
             // Act
-            List<string> errors = CmdLineEz<DeleteCommandLineWithNotSupportedType>.Process(result, args);
+            List<string> errors = CmdLineEz<DeleteCommandLine>.Process(result, args);
 
             // Assert
             errors.Should().NotBeNull("Errors list should not be null.")
                 .And.ContainSingle(e => e == "missing confirm", "Error message should be 'missing confirm'.");
         }
+
+
     }
 }
