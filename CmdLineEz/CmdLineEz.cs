@@ -106,22 +106,62 @@ namespace CmdLineEz
             #endregion
 
             return errors.Any() ? errors : null!;
-            }
+        }
 
-            if (remainingProperty.Count() > 1)
+        public static T Parse(string fullCommandString)
+        {
+            string[] args = fullCommandString
+                .Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries)
+                .Skip(1) // The first in line is the command type which should be skiped
+                .ToArray();
+            T result = new T();
+
+            #region Check for passed duplicates
+
+            var duplicatedParameters = args.GroupBy(p => p)
+                .Select(group => new
+                {
+                    Name = group.Key,
+                    Count = group.Count()
+                })
+                .Where(group => group.Count > 1)
+                .ToList();
+
+            if (duplicatedParameters.Count > 0)
             {
-                errors.Add($"There are not allowed more then 1 remaining properties");
+                throw new ArgumentException("Duplicated parameters in command line");
             }
-
-            List<string> remainingArgs = args.Where(a => !a.StartsWith("/")).ToList();
-            remainingProperty.First().SetValue(result, remainingArgs);
 
             #endregion
 
+            #region Here we'll check that remaining args puts in the end of the command string
 
+            bool nonOptionalStarted = false;
+            for (int i = 0; i < args.Length; i++)
+            {
+                if (args[i].StartsWith("/"))
+                {
+                    if (nonOptionalStarted)
+                    {
+                        throw new ArgumentException("Command parsing failed: remaining parameters must come at the end.");
+                    }
+                }
+                else
+                {
+                    nonOptionalStarted = true;
+                }
+            }
 
+            #endregion
 
-            return errors.Any() ? errors : null!;
+            var errors = Process(result, args);
+
+            if (errors != null && errors.Count > 0)
+            {
+                throw new InvalidOperationException("Command parsing failed: " + string.Join(", ", errors));
+            }
+
+            return result;
         }
     }
 }
