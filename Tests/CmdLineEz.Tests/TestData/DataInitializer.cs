@@ -98,5 +98,119 @@ namespace CmdLineEz.Tests.TestData
             yield return new TestCaseData(new DeleteCommandLine(),
             new string[7] { "/conFIrm", "/RecuRsive", "/VeRbOsE", "/PreFix=    ", "/PreFix=SomeValue", "example", "" });
         }
+
+        public static IEnumerable<TestCaseData> GetValidCommandLines()
+        {
+            yield return new TestCaseData(
+                "delete /confirm file1.txt file2.txt", 
+                new DeleteCommandLine 
+                { 
+                    ConfirmNeeded = true, 
+                    Recursive = false, 
+                    PrintDetails = false, 
+                    Prefix = null!, 
+                    Remaining = new List<string> { "file1.txt", "file2.txt" }
+                });
+
+            yield return new TestCaseData(
+                "delete /confirm /recursive file1.txt file2.txt", 
+                new DeleteCommandLine
+                {
+                    ConfirmNeeded = true, 
+                    Recursive = true, 
+                    PrintDetails = false, 
+                    Prefix = null!, 
+                    Remaining = new List<string>{"file1.txt", "file2.txt" }
+                });
+
+            yield return new TestCaseData(
+                "delete /confirm /verbose file1.txt file2.txt", 
+                new DeleteCommandLine
+                {
+                    ConfirmNeeded = true, 
+                    Recursive = false, 
+                    PrintDetails = true, 
+                    Prefix = null!, 
+                    Remaining = new List<string>{"file1.txt", "file2.txt" }
+                });
+
+            yield return new TestCaseData(
+                "delete /verbose /confirm file1.txt file2.txt", 
+                new DeleteCommandLine
+                {
+                    ConfirmNeeded = true, 
+                    Recursive = false, 
+                    PrintDetails = true, 
+                    Prefix = null!, 
+                    Remaining = new List<string>{"file1.txt", "file2.txt" }
+                });
+
+            yield return new TestCaseData(
+                "delete /confirm /prefix=prefix /verbose file1.txt file2.txt", 
+                new DeleteCommandLine
+                {
+                    ConfirmNeeded = true, 
+                    Recursive = false, 
+                    PrintDetails = true, 
+                    Prefix = "prefix", 
+                    Remaining = new List<string>{"file1.txt", "file2.txt" }
+                });
+
+            yield return new TestCaseData(
+                "delete /VERBOSE /confirm file1.txt file2.txt file3.txt file4.txt file5.txt file6.txt -file7", 
+                new DeleteCommandLine
+                {
+                    ConfirmNeeded = true, 
+                    Recursive = false, 
+                    PrintDetails = true, 
+                    Prefix = null!, 
+                    Remaining = new List<string>{"file1.txt", "file2.txt", "file3.txt", "file4.txt", "file5.txt", "file6.txt", "-file7" }
+                });
+
+            yield return new TestCaseData(
+                "delete /confirm", 
+                new DeleteCommandLine
+                {
+                    ConfirmNeeded = true, 
+                    Recursive = false, 
+                    PrintDetails = false, 
+                    Prefix = null!,
+                    Remaining = new List<string>()
+                });
+
+            yield return new TestCaseData(
+                "someValue /confirm", 
+                new DeleteCommandLine
+                {
+                    ConfirmNeeded = true,
+                    Recursive = false,
+                    PrintDetails = false,
+                    Prefix = null!,
+                    Remaining = new List<string>()
+                });
+
+            yield return new TestCaseData(
+                "someValue /confirm /verbose", 
+                new DeleteCommandLine
+                {
+                    ConfirmNeeded = true, 
+                    Recursive = false, 
+                    PrintDetails = true, 
+                    Prefix = null!, 
+                    Remaining = new List<string>()
+                });
+
+            yield return new TestCaseData(
+                "someValue /confirm /RecurSivE file1.txt file2.txt", 
+                new DeleteCommandLine
+                {
+                    ConfirmNeeded = true, 
+                    Recursive = true, 
+                    PrintDetails = false, 
+                    Prefix = null!, 
+                    Remaining = new List<string>{"file1.txt", "file2.txt" }
+                });
+
+        }
     }
 }

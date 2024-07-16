@@ -72,6 +72,7 @@ namespace CmdLineEz.Tests
                 "Error list should NOT contain the message 'There are not allowed more then 1 remaining properties'.");
         }
 
+
         [TestCaseSource(typeof(DataInitializer), nameof(DataInitializer.GetArgsWithDublicates))]
         public void Process_ArgsHasDublicateParameters_ShouldAddExceptionToErrors(DeleteCommandLine result, string[] args)
         {
@@ -81,6 +82,20 @@ namespace CmdLineEz.Tests
             // Assert
             errors.Should().Contain(e => e.StartsWith("Ambiguous parameter "),
                 "Error list should contain ambiguous parameter error.");
+        }
+
+
+        [TestCaseSource(typeof(DataInitializer), nameof(DataInitializer.GetValidCommandLines))]
+        public void Parse_WithValidArgs_ShouldNotThrowError(string commandLine, DeleteCommandLine dcl)
+        {
+            // Act
+            DeleteCommandLine result = null!;
+            Action act = () => result = CmdLineEz<DeleteCommandLine>.Parse(commandLine);
+
+            // Assert
+            act.Should().NotThrow();
+            result.Should().BeEquivalentTo(dcl);
+
         }
     }
 }
