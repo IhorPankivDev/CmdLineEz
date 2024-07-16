@@ -1,12 +1,13 @@
 ﻿using CmdLineEz.Attributes;
 using System.Reflection;
+using System.Text.RegularExpressions;
 
 namespace CmdLineEz
 {
     /// <summary>
     /// Processor for command line arguments.
     /// </summary>
-    public class CmdLineEz<T>
+    public class CmdLineEz<T> where T : new()
     {
         /// <summary>
         /// Pass your customized template class here to read the fields, pass the args array into this to process it and set the values.
@@ -29,16 +30,49 @@ namespace CmdLineEz
             var remainingProperty = properties
                 .Where(p => p.GetCustomAttribute<CmdLineEzAttribute>()?.Flags.HasFlag(CmdLineEzAttributeFlags.Remaining) == true);
 
+            #endregion
+
+            #region Parsing remaining props
+
+            if (remainingProperty.Count() > 1)
+            {
+                errors.Add($"There are not allowed more then 1 remaining properties");
+            }
+
+            List<string> remainingArgs = args.Where(a => !a.StartsWith("/")).ToList();
+            remainingProperty.First().SetValue(result, remainingArgs);
+
+            #endregion
+
+            #region Parsing main props
+
             foreach (var prop in properties)
             {
                 var attribute = prop.GetCustomAttribute<CmdLineEzAttribute>();
                 string paramName = attribute?.AltName ?? prop.Name.ToLower();
 
-                var inputParam = argsList.FirstOrDefault(a =>
-                a.StartsWith($"/{paramName}=", StringComparison.OrdinalIgnoreCase)
-                ||
-                a.StartsWith($"/{paramName}", StringComparison.OrdinalIgnoreCase));
+                IEnumerable<string> likelyRelevantParams = new List<string>();
 
+                try
+                {
+                    likelyRelevantParams = Type.GetTypeCode(prop.PropertyType) switch
+                    {
+                        TypeCode.Boolean => argsList.Where(a => Regex.Match(a, $@"^/{paramName}\b", RegexOptions.IgnoreCase).Success),
+                        TypeCode.Int32 or TypeCode.Decimal or TypeCode.String => argsList.Where(a => a.StartsWith($"/{paramName}=", StringComparison.OrdinalIgnoreCase)),
+                        _ => throw new NotSupportedException()
+                    };
+                }
+                catch (NotSupportedException)
+                {
+                    errors.Add($"invalid {paramName}");
+                }
+
+                if (likelyRelevantParams.Count() > 1)
+                {
+                    errors.Add($"Ambiguous parameter {paramName}");
+                }
+
+                string inputParam = likelyRelevantParams.Count() > 0 ? likelyRelevantParams.First() : null!;
 
                 if (inputParam != null)
                 {
@@ -49,13 +83,13 @@ namespace CmdLineEz
 
                     try
                     {
-                        prop.SetValue(result, prop.PropertyType.Name switch
+                        prop.SetValue(result, Type.GetTypeCode(prop.PropertyType) switch
                         {
-                            nameof(Boolean) => true,
-                            nameof(Int32) => int.Parse(value),
-                            nameof(Decimal) => decimal.Parse(value),
-                            nameof(String) => value,
-                            _ => throw new NotSupportedException($"Type {prop.PropertyType} in not supported")
+                            TypeCode.Boolean => true,
+                            TypeCode.Int32 => int.Parse(value),
+                            TypeCode.Decimal => decimal.Parse(value),
+                            TypeCode.String => value,
+                            _ => throw new NotSupportedException()
                         });
                     }
                     catch (NotSupportedException)
@@ -67,6 +101,11 @@ namespace CmdLineEz
                 {
                     errors.Add($"missing {paramName}");
                 }
+            }
+
+            #endregion
+
+            return errors.Any() ? errors : null!;
             }
 
             if (remainingProperty.Count() > 1)
