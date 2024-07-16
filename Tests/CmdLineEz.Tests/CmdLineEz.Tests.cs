@@ -32,7 +32,7 @@ namespace CmdLineEz.Tests
 
             // Assert
             errors.Should().NotBeNull("Errors list should not be null.")
-                .And.ContainSingle(e => e == "invalid char", "Error message should be 'invalid char'.");
+                .And.ContainSingle(e => e == "invalid type of char parameter", "Error message should be 'invalid type of char parameter'.");
         }
 
 

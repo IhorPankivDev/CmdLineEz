@@ -64,7 +64,7 @@ namespace CmdLineEz
                 }
                 catch (NotSupportedException)
                 {
-                    errors.Add($"invalid {paramName}");
+                    errors.Add($"invalid type of {paramName} parameter");
                 }
 
                 if (likelyRelevantParams.Count() > 1)
@@ -89,22 +89,15 @@ namespace CmdLineEz
                             value = inputParam.Split('=')[1];
                         }
                     }
-                        
-                    try
+
+                    prop.SetValue(result, Type.GetTypeCode(prop.PropertyType) switch
                     {
-                        prop.SetValue(result, Type.GetTypeCode(prop.PropertyType) switch
-                        {
-                            TypeCode.Boolean => true,
-                            TypeCode.Int32 => int.Parse(value),
-                            TypeCode.Decimal => decimal.Parse(value),
-                            TypeCode.String => value,
-                            _ => throw new NotSupportedException()
-                        });
-                    }
-                    catch (NotSupportedException)
-                    {
-                        errors.Add($"invalid {paramName}");
-                    }
+                        TypeCode.Boolean => true,
+                        TypeCode.Int32 => int.Parse(value),
+                        TypeCode.Decimal => decimal.Parse(value),
+                        TypeCode.String => value,
+                        _ => throw new NotSupportedException()
+                    });
                 }
                 else if (attribute?.Flags.HasFlag(CmdLineEzAttributeFlags.Required) == true)
                 {
