@@ -138,7 +138,7 @@ namespace CmdLineEz
 
             #endregion
 
-            #region Here we'll check that remaining args puts in the end of the command string
+            #region Check that remaining args puts in the end of the command string
 
             bool nonOptionalStarted = false;
             for (int i = 0; i < args.Length; i++)
