@@ -60,6 +60,7 @@ namespace CmdLineEz.Tests
                 "Error message should be 'There are not allowed more then 1 remaining properties'.");
         }
 
+
         [TestCaseSource(typeof(DataInitializer), nameof(DataInitializer.GetValidDeleteCommandLine))]
         public void Process_TemplateClassWithOneRemainings_ShouldNotAddRemainingExceptionToErrors(DeleteCommandLine result, string[] args)
         {
@@ -69,6 +70,17 @@ namespace CmdLineEz.Tests
             // Assert
             errors?.Should().NotContain(e => e == "There are not allowed more then 1 remaining properties",
                 "Error list should NOT contain the message 'There are not allowed more then 1 remaining properties'.");
+        }
+
+        [TestCaseSource(typeof(DataInitializer), nameof(DataInitializer.GetArgsWithDublicates))]
+        public void Process_ArgsHasDublicateParameters_ShouldAddExceptionToErrors(DeleteCommandLine result, string[] args)
+        {
+            // Act
+            List<string> errors = CmdLineEz<DeleteCommandLine>.Process(result, args);
+
+            // Assert
+            errors.Should().Contain(e => e.StartsWith("Ambiguous parameter "),
+                "Error list should contain ambiguous parameter error.");
         }
     }
 }

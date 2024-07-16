@@ -18,6 +18,7 @@ namespace CmdLineEz.Tests.TestData
             yield return new TestCaseData(new DeleteCommandLine(), 
             new string[6] { "/conFIrm", "/RecuRsive", "/VeRbOsE", "/PreFix=    ", "example", "" });
         }
+
         public static IEnumerable<TestCaseData> GetNullInsteadOfDeleteCommandLine()
         {
             yield return new TestCaseData(null, null);
@@ -81,6 +82,21 @@ namespace CmdLineEz.Tests.TestData
                 Recursive = true,
                 PrintDetails = true,
             }, new string[6] { "confirm", "/RecuRsive", "/VeRbOsE", "/PreFix=    ", "example", "" });
+        }
+
+        public static IEnumerable<TestCaseData> GetArgsWithDublicates()
+        {
+            yield return new TestCaseData(new DeleteCommandLine(),
+            new string[8] { "/Confirm", "/Recursive", "/VeRbOsE", "/Prefix", "/Recursive", "example", "example2", "example3" });
+
+            yield return new TestCaseData(new DeleteCommandLine(),
+            new string[6] { "/VeRbOsE", "/Confirm", "/VeRbOsE", "/Prefix=someValue", "example", "" });
+
+            yield return new TestCaseData(new DeleteCommandLine(),
+            new string[3] { "/Confirm", "/Recursive", "/Confirm"});
+
+            yield return new TestCaseData(new DeleteCommandLine(),
+            new string[7] { "/conFIrm", "/RecuRsive", "/VeRbOsE", "/PreFix=    ", "/PreFix=SomeValue", "example", "" });
         }
     }
 }
