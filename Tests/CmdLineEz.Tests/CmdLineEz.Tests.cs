@@ -25,7 +25,7 @@ namespace CmdLineEz.Tests
 
 
         [TestCaseSource(typeof(DataInitializer), nameof(DataInitializer.GetDeleteCommandLineWithNotSupportedType))]
-        public void Process_DeleteCommandLineWithNotSupportedType_ShouldAddInvalidParamNameExceptionToErrors(DeleteCommandLineWithNotSupportedType result, string[] args)
+        public void Process_TemplateClassWithNotSupportedType_ShouldAddInvalidParamNameExceptionToErrors(DeleteCommandLineWithNotSupportedType result, string[] args)
         {
             // Act
             List<string> errors = CmdLineEz<DeleteCommandLineWithNotSupportedType>.Process(result, args);
@@ -37,7 +37,7 @@ namespace CmdLineEz.Tests
 
 
         [TestCaseSource(typeof(DataInitializer), nameof(DataInitializer.GetDeleteCommandLineWithMissingRequiredParameter))]
-        public void Process_DeleteCommandLineWithMissingRequiredParameter_ShouldAddMissingParamExceptionToErrors(DeleteCommandLine result, string[] args)
+        public void Process_TemplateClassWithMissingRequiredParameter_ShouldAddMissingParamExceptionToErrors(DeleteCommandLine result, string[] args)
         {
             // Act
             List<string> errors = CmdLineEz<DeleteCommandLine>.Process(result, args);
@@ -49,7 +49,7 @@ namespace CmdLineEz.Tests
 
 
         [TestCaseSource(typeof(DataInitializer), nameof(DataInitializer.GetDeleteCommandLineWithTwoRemainings))]
-        public void Process_DeleteCommandLineWithTwoRemainings_ShouldAddRemainingExceptionToErrors(DeleteCommandLineWithTwoRemainings result, string[] args)
+        public void Process_TemplateClassWithTwoRemainings_ShouldAddRemainingExceptionToErrors(DeleteCommandLineWithTwoRemainings result, string[] args)
         {
             // Act
             List<string> errors = CmdLineEz<DeleteCommandLineWithTwoRemainings>.Process(result, args);
