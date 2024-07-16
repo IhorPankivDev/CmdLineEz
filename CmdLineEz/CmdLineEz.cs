@@ -1,4 +1,5 @@
 ﻿using CmdLineEz.Attributes;
+using System.Diagnostics;
 using System.Reflection;
 using System.Text.RegularExpressions;
 
@@ -41,6 +42,7 @@ namespace CmdLineEz
 
             List<string> remainingArgs = args.Where(a => !a.StartsWith("/")).ToList();
             remainingProperty.First().SetValue(result, remainingArgs);
+            properties = properties.Except(remainingProperty).ToArray();
 
             #endregion
 
