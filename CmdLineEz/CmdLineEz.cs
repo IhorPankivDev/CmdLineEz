@@ -79,8 +79,17 @@ namespace CmdLineEz
                     string value = null!;
 
                     if (inputParam.Contains("="))
-                        value = inputParam.Split('=')[1];
-
+                    {
+                        if (inputParam.Length <= inputParam.IndexOf("=") + 1)
+                        {
+                            errors.Add($"invalid {paramName}");
+                        }
+                        else
+                        {
+                            value = inputParam.Split('=')[1];
+                        }
+                    }
+                        
                     try
                     {
                         prop.SetValue(result, Type.GetTypeCode(prop.PropertyType) switch
