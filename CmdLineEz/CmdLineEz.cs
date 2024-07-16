@@ -53,11 +53,11 @@ namespace CmdLineEz
                 var attribute = prop.GetCustomAttribute<CmdLineEzAttribute>();
                 string paramName = attribute?.AltName ?? prop.Name.ToLower();
 
-                IEnumerable<string> likelyRelevantParams = new List<string>();
+                IEnumerable<string> relevantByTypeParams = new List<string>();
 
                 try
                 {
-                    likelyRelevantParams = Type.GetTypeCode(prop.PropertyType) switch
+                    relevantByTypeParams = Type.GetTypeCode(prop.PropertyType) switch
                     {
                         TypeCode.Boolean => argsList.Where(a => Regex.Match(a, $@"^/{paramName}\b", RegexOptions.IgnoreCase).Success),
                         TypeCode.Int32 or TypeCode.Decimal or TypeCode.String => argsList.Where(a => a.StartsWith($"/{paramName}=", StringComparison.OrdinalIgnoreCase)),
@@ -69,12 +69,12 @@ namespace CmdLineEz
                     errors.Add($"invalid type of {paramName} parameter");
                 }
 
-                if (likelyRelevantParams.Count() > 1)
+                if (relevantByTypeParams.Count() > 1)
                 {
                     errors.Add($"Ambiguous parameter {paramName}");
                 }
 
-                string inputParam = likelyRelevantParams.Count() > 0 ? likelyRelevantParams.First() : null!;
+                string inputParam = relevantByTypeParams.Count() > 0 ? relevantByTypeParams.First() : null!;
 
                 if (inputParam != null)
                 {
