@@ -59,5 +59,16 @@ namespace CmdLineEz.Tests
                 .And.ContainSingle(e => e == "There are not allowed more then 1 remaining properties", 
                 "Error message should be 'There are not allowed more then 1 remaining properties'.");
         }
+
+        [TestCaseSource(typeof(DataInitializer), nameof(DataInitializer.GetValidDeleteCommandLine))]
+        public void Process_TemplateClassWithOneRemainings_ShouldNotAddRemainingExceptionToErrors(DeleteCommandLine result, string[] args)
+        {
+            // Act
+            List<string> errors = CmdLineEz<DeleteCommandLine>.Process(result, args);
+
+            // Assert
+            errors?.Should().NotContain(e => e == "There are not allowed more then 1 remaining properties",
+                "Error list should NOT contain the message 'There are not allowed more then 1 remaining properties'.");
+        }
     }
 }

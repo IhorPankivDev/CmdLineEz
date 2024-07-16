@@ -4,6 +4,20 @@ namespace CmdLineEz.Tests.TestData
 {
     public class DataInitializer
     {
+        public static IEnumerable<TestCaseData> GetValidDeleteCommandLine()
+        {
+            yield return new TestCaseData(new DeleteCommandLine(),
+            new string[7] { "/Confirm", "/Recursive", "/VeRbOsE", "/Prefix", "example", "example2", "example3" });
+
+            yield return new TestCaseData(new DeleteCommandLine(),
+            new string[5] { "/Confirm", "/VeRbOsE", "/Prefix=someValue", "example", "" });
+
+            yield return new TestCaseData(new DeleteCommandLine(),
+            new string[2] { "/Confirm", "/Recursive" });
+
+            yield return new TestCaseData(new DeleteCommandLine(), 
+            new string[6] { "/conFIrm", "/RecuRsive", "/VeRbOsE", "/PreFix=    ", "example", "" });
+        }
         public static IEnumerable<TestCaseData> GetNullInsteadOfDeleteCommandLine()
         {
             yield return new TestCaseData(null, null);
@@ -40,7 +54,7 @@ namespace CmdLineEz.Tests.TestData
             new string[5] { "/Recursive=somevalue", "/VeRbOsE", "/Prefix=someValue", "example" , "" });
 
             yield return new TestCaseData(new DeleteCommandLine(),
-            new string[1] { "/Recursive=   " });
+            new string[1] { "/Recursive=" });
 
             yield return new TestCaseData(new DeleteCommandLine
             {
